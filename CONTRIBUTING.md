@@ -164,6 +164,18 @@ Re-invoking `/autofix` after a successful apply is a safe no-op — the workflow
 
 Sharing the manifest keeps the two aligned: a consistency-guard test asserts the manifest set equals the `gitnexus/vendor/tree-sitter-*` directories. **When you vendor a new grammar (or remove one), update `.github/vendored-grammars.json` in the same change** — otherwise that guard fails CI and the readiness report regresses to `?` placeholders.
 
+## Web UI hosting on Vercel
+
+The hosted UI ([gitnexus.vercel.app](https://gitnexus.vercel.app)) is the `gitnexus-web/` Vite SPA. Project layout that Vercel relies on:
+
+- **Root Directory:** `gitnexus-web` with _Include source files outside of the Root Directory_ enabled — `vite.config.ts` reads `../gitnexus/package.json` and `gitnexus-shared` is a `file:../gitnexus-shared` dependency.
+- **Framework preset:** Vite (also pinned in `gitnexus-web/vercel.json`). Output is `dist/`.
+- **Install command:** `npm ci --include=dev && cd ../gitnexus-shared && node ../gitnexus-web/node_modules/typescript/lib/tsc.js` — compiles `gitnexus-shared/dist` with the web package's TypeScript 7, matching `setup-gitnexus-web` (see [Development setup](#development-setup)).
+- **`gitnexus-web/vercel.json`:** SPA rewrite to `/index.html` for every path except `/assets/*` (immutable, hashed) and `/_vercel/*` (platform routes used by Speed Insights); `nosniff` + `Referrer-Policy` headers.
+- **`.vercelignore` (repo root):** trims CLI uploads to web + shared sources. It keeps `gitnexus/package.json` because the Vite config needs it; do not ignore `gitnexus-web/package-lock.json` or `npm ci` fails on the build machine.
+- **Speed Insights:** `@vercel/speed-insights/react` is mounted in `gitnexus-web/src/main.tsx` (Vite → `/react` entry, not `/next`). `src/lib/speed-insights.ts` supplies a `beforeSend` that strips the query string, because the SPA keeps `?repo=<local path>&server=<local URL>` in the URL and those must not be sent as telemetry. The feature also has to be enabled on the Vercel project (dashboard → Speed Insights, or `vercel project speed-insights`).
+- **Preview/fork deployments** talking to a local `gitnexus serve` need `GITNEXUS_PUBLIC_ORIGIN` on the server side — the CORS allowlist only includes the two production hosts.
+
 ## AI-assisted contributions
 
 If you use coding agents, follow project context files (e.g. `AGENTS.md`, `CLAUDE.md`) and avoid drive-by refactors unrelated to the issue. Prefer incremental, test-backed changes.

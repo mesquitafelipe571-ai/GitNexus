@@ -4,8 +4,10 @@
 .gitnexus/**
 node_modules
 **/node_modules
-gitnexus
-gitnexus/**
+# Skip the CLI package, but keep its package.json: gitnexus-web/vite.config.ts
+# reads ../gitnexus/package.json (engines.node) at build time.
+gitnexus/*
+!gitnexus/package.json
 eval
 eval/**
 .claude
