@@ -322,6 +322,10 @@ jobs:
           # which the action resolves correctly.
           client-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          # Exactly the grants documented above; nothing else the App holds.
+          permission-contents: write
+          permission-workflows: write
+          permission-metadata: read
 
       # ── Separate checkout steps per mode ─────────────────────────────────
       # Conditional `token:` expressions are footguns: empty string passed to

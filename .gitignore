@@ -132,3 +132,7 @@ gitnexus/web/
 
 # Machine-local skill-evolution evidence (consumed by eval/workflow_bench/evolve.py)
 eval/workflow_bench/learnings.jsonl
+
+# Editor local-history and scratch drafts
+.history/
+.sisyphus/
