@@ -950,14 +950,14 @@ docker compose exec gitnexus-server gitnexus index /workspace/my-repo
 # Server
 docker run --rm -d \
   --name gitnexus-server \
-  -p 4747:4747 \
+  -p 127.0.0.1:4747:4747 \
   -v gitnexus-data:/data/gitnexus \
   ghcr.io/abhigyanpatwari/gitnexus:latest
 
 # Web UI
 docker run --rm -d \
   --name gitnexus-web \
-  -p 4173:4173 \
+  -p 127.0.0.1:4173:4173 \
   ghcr.io/abhigyanpatwari/gitnexus-web:latest
 ```
 

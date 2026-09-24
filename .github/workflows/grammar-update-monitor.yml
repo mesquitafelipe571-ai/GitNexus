@@ -66,6 +66,9 @@ jobs:
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          # Push update branches and list/open PRs only.
+          permission-contents: write
+          permission-pull-requests: write
 
       - name: Detect updates, re-vendor ABI-compatible ones, open PRs
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0

@@ -5,8 +5,11 @@ services:
     # Map the server to the same host port the web UI expects by default
     # (http://localhost:4747). The browser runs on the host, so the UI's
     # built-in default works without any reconfiguration.
+    # Published on loopback only: `gitnexus serve` has no authentication, and
+    # write routes admit non-browser clients (no Origin header). Set
+    # GITNEXUS_BIND_ADDR=0.0.0.0 only on a trusted network.
     ports:
-      - '${SERVER_HOST_PORT:-4747}:4747'
+      - '${GITNEXUS_BIND_ADDR:-127.0.0.1}:${SERVER_HOST_PORT:-4747}:4747'
     volumes:
       # Persist the global registry, indexes, and cloned repos across runs.
       - gitnexus-data:/data/gitnexus
@@ -29,7 +32,7 @@ services:
     image: ${WEB_IMAGE:-ghcr.io/abhigyanpatwari/gitnexus-web:latest}
     container_name: ${WEB_CONTAINER_NAME:-gitnexus-web}
     ports:
-      - '${WEB_HOST_PORT:-4173}:4173'
+      - '${GITNEXUS_BIND_ADDR:-127.0.0.1}:${WEB_HOST_PORT:-4173}:4173'
     # Override the backend URL served to the browser. The default
     # (http://localhost:4747) works when both containers run locally.
     # Set GITNEXUS_BACKEND_URL in your .env or shell for remote/custom setups:

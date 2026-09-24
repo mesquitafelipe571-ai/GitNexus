@@ -564,6 +564,10 @@ jobs:
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          # Scope the token to what this job does: push the prebuilds commit
+          # and open a PR. Without these the token inherits every App grant.
+          permission-contents: write
+          permission-pull-requests: write
 
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
